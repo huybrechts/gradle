@@ -59,7 +59,7 @@ public class ProjectLifecycleController {
     }
 
     public void ensureSelfConfigured() {
-        controller.maybeTransition(State.Created, State.Configured, () -> project.evaluate());
+        controller.transitionIfNotPreviously(State.Created, State.Configured, () -> project.evaluate());
     }
 
     public void ensureTasksDiscovered() {
