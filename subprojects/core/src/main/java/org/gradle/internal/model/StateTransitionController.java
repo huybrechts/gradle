@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 public class StateTransitionController<T extends StateTransitionController.State> {
     private final DisplayName displayName;
     private final Synchronizer synchronizer;
-    // This structure is immutable, and this fields is mutated only by the thread that owns the lock
+    // This structure is immutable, and this field is mutated only by the thread that owns the lock
     private volatile CurrentState<T> state;
 
     public StateTransitionController(DisplayName displayName, T initialState, Synchronizer synchronizer) {
@@ -109,6 +109,21 @@ public class StateTransitionController<T extends StateTransitionController.State
         return synchronizer.withLock(() -> {
             CurrentState<T> current = state;
             current.assertInState(expected);
+            try {
+                return action.get();
+            } catch (Throwable t) {
+                state = current.failed(ExecutionResult.failed(t));
+                throw state.rethrow();
+            }
+        });
+    }
+
+    public <S> S inStateOrLater(T expected, Supplier<S> action) {
+        return synchronizer.withLock(() -> {
+            CurrentState<T> current = state;
+            if (!current.hasSeenState(expected)) {
+                throw new IllegalStateException();
+            }
             try {
                 return action.get();
             } catch (Throwable t) {
