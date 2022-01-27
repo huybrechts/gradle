@@ -22,7 +22,6 @@ import org.gradle.api.internal.SettingsInternal
 import org.gradle.execution.BuildWorkExecutor
 import org.gradle.execution.plan.ExecutionPlan
 import org.gradle.execution.taskgraph.TaskExecutionGraphInternal
-import org.gradle.initialization.BuildCompletionListener
 import org.gradle.initialization.exception.ExceptionAnalyser
 import org.gradle.initialization.internal.InternalBuildFinishedListener
 import org.gradle.internal.execution.BuildOutputCleanupRegistry
@@ -45,7 +44,6 @@ class DefaultBuildLifecycleControllerTest extends Specification {
 
     def buildModelController = Mock(BuildModelController)
     def exceptionAnalyser = Mock(ExceptionAnalyser)
-    def buildCompletionListener = Mock(BuildCompletionListener.class)
     def buildFinishedListener = Mock(InternalBuildFinishedListener.class)
     def buildServices = Mock(BuildScopeServices.class)
     def executionPlan = Mock(ExecutionPlan)
@@ -67,7 +65,7 @@ class DefaultBuildLifecycleControllerTest extends Specification {
 
     DefaultBuildLifecycleController controller() {
         return new DefaultBuildLifecycleController(gradleMock, buildModelController, exceptionAnalyser, buildBroadcaster,
-            buildCompletionListener, buildFinishedListener, workPreparer, workExecutor, buildServices, toolingControllerFactory, TestUtil.stateTransitionControllerFactory())
+            buildFinishedListener, workPreparer, workExecutor, buildServices, toolingControllerFactory, TestUtil.stateTransitionControllerFactory())
     }
 
     void testCanFinishBuildWhenNothingHasBeenDone() {
