@@ -451,31 +451,6 @@ class DefaultBuildLifecycleControllerTest extends Specification {
         finishResult.failures == [failure3]
     }
 
-    void testCleansUpOnStop() {
-        given:
-        def controller = controller()
-        controller.finishBuild(null)
-
-        when:
-        controller.stop()
-
-        then:
-        1 * buildServices.close()
-        1 * buildCompletionListener.completed()
-    }
-
-    void testCanStopWithoutFinishingWhenBuildHasDoneNothing() {
-        given:
-        def controller = controller()
-
-        when:
-        controller.stop()
-
-        then:
-        1 * buildServices.close()
-        1 * buildCompletionListener.completed()
-    }
-
     void testCannotGetModelAfterFinished() {
         given:
         def controller = controller()
